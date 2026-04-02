@@ -32,7 +32,7 @@ jobs:
         run: |
           set -e
           BASE="https://raw.githubusercontent.com/HeavyWork/AEResources/master"
-          mkdir -p SDK/Headers SDK/Util SDK/Headers/SP
+          mkdir -p SDK/Headers SDK/Util SDK/Headers/SP SDK/Headers/adobesdk/config
 
           # Core headers
           for f in \
@@ -57,10 +57,16 @@ jobs:
             curl -fsSL "$BASE/Util/$f" -o "SDK/Util/$f"
           done
 
-          # SP (Suite Peer) headers required by AE_EffectCB.h
-          for f in SPBasic.h SPFiles.h SPRuntme.h SPCaches.h; do
+          # SP (Suite Peer) headers — SPBasic.h pulls in SPTypes.h -> SPConfig.h + SPErrorCodes.h
+          for f in SPBasic.h SPFiles.h SPRuntme.h SPCaches.h SPTypes.h SPConfig.h SPErrorCodes.h; do
             echo "Fetching Headers/SP/$f"
             curl -fsSL "$BASE/Headers/SP/$f" -o "SDK/Headers/SP/$f"
+          done
+
+          # adobesdk/config headers — required by AE_EffectCB.h
+          for f in PreConfig.h PostConfig.h AdobesdkTypes.h; do
+            echo "Fetching Headers/adobesdk/config/$f"
+            curl -fsSL "$BASE/Headers/adobesdk/config/$f" -o "SDK/Headers/adobesdk/config/$f"
           done
 
       # ── 4. Generate PiPL binary ───────────────────────────────────────────────
