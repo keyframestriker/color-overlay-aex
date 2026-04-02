@@ -91,6 +91,11 @@ jobs:
             curl -fsSL "$BASE/Headers/adobesdk/config/$f" -o "SDK/Headers/adobesdk/config/$f"
           done
 
+          # adobesdk/drawbotsuite headers
+          mkdir -p SDK/Headers/adobesdk/drawbotsuite
+          curl -fsSL "$BASE/Headers/adobesdk/DrawbotSuite.h" -o "SDK/Headers/adobesdk/DrawbotSuite.h"
+          curl -fsSL "$BASE/Headers/adobesdk/drawbotsuite/DrawbotSuiteTypes.h" -o "SDK/Headers/adobesdk/drawbotsuite/DrawbotSuiteTypes.h"
+
           # Util/ headers
           for f in Param_Utils.h entry.h String_Utils.h; do
             echo "Fetching Util/$f"

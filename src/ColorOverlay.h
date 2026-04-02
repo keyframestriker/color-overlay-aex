@@ -10,7 +10,6 @@
 #include "AE_EffectCB.h"
 #include "AE_Macros.h"
 #include "Param_Utils.h"
-#include "AE_GeneralPlug.h"
 
 // ─── Version ──────────────────────────────────────────────────────────────────
 #define MAJOR_VERSION   1
