@@ -65,7 +65,8 @@ jobs:
 
       # ── 4. Generate PiPL binary ───────────────────────────────────────────────
       - name: Generate PiPL resource binary
-        run: python scripts/gen_pipl.py
+        shell: cmd
+        run: python scripts\gen_pipl.py
 
       # ── 5. Build ──────────────────────────────────────────────────────────────
       - name: Build ColorOverlay.aex

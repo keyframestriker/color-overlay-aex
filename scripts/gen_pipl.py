@@ -124,5 +124,5 @@ output_path = os.path.join(repo_root, "src", "ColorOverlay.pipl.bin")
 with open(output_path, "wb") as f:
     f.write(pipl)
 
-print(f"[gen_pipl] wrote {len(pipl)} bytes → {output_path}")
+print(f"[gen_pipl] wrote {len(pipl)} bytes -> {output_path}")
 print(f"[gen_pipl] hex: {pipl.hex()}")
