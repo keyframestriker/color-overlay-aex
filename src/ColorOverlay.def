@@ -1,0 +1,6 @@
+; ColorOverlay.def — Module definition file
+; Exports the AE plug-in entry point so AE can find it.
+
+LIBRARY     ColorOverlay
+EXPORTS
+    EffectMain

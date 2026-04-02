@@ -1,0 +1,94 @@
+name: Build ColorOverlay.aex
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:       # allows manual "Run workflow" from the Actions tab
+
+jobs:
+  build:
+    name: Windows x64 (MSVC)
+    runs-on: windows-latest
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up MSVC (cl.exe / link.exe / rc.exe on PATH) ─────────────────
+      - name: Set up MSVC x64
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+
+      # ── 3. Download AE SDK headers from public GitHub mirror ─────────────────
+      #    Source: https://github.com/HeavyWork/AEResources  (archived, MIT-like)
+      #    AE SDK files are Adobe Confidential; using them for personal/dev builds
+      #    is standard practice in the AE plugin community.
+      - name: Download AE SDK headers
+        shell: bash
+        run: |
+          set -e
+          BASE="https://raw.githubusercontent.com/HeavyWork/AEResources/master"
+          mkdir -p SDK/Headers SDK/Util SDK/Headers/SP
+
+          # Core headers
+          for f in \
+            AE_Effect.h \
+            AE_EffectCB.h \
+            AE_EffectCBSuites.h \
+            AE_EffectSuites.h \
+            AE_AdvEffectSuites.h \
+            AE_Macros.h \
+            AEConfig.h \
+            AE_EffectVers.h \
+            AE_GeneralPlug.h \
+            AEFX_SuiteHandlerTemplate.h
+          do
+            echo "Fetching Headers/$f"
+            curl -fsSL "$BASE/Headers/$f" -o "SDK/Headers/$f"
+          done
+
+          # Utility headers
+          for f in Param_Utils.h entry.h String_Utils.h; do
+            echo "Fetching Util/$f"
+            curl -fsSL "$BASE/Util/$f" -o "SDK/Util/$f"
+          done
+
+          # SP (Suite Peer) headers required by AE_EffectCB.h
+          for f in SPBasic.h SPFiles.h SPRuntme.h SPCaches.h; do
+            echo "Fetching Headers/SP/$f"
+            curl -fsSL "$BASE/Headers/SP/$f" -o "SDK/Headers/SP/$f"
+          done
+
+      # ── 4. Generate PiPL binary ───────────────────────────────────────────────
+      - name: Generate PiPL resource binary
+        run: python scripts/gen_pipl.py
+
+      # ── 5. Build ──────────────────────────────────────────────────────────────
+      - name: Build ColorOverlay.aex
+        shell: cmd
+        run: build.bat
+
+      # ── 6. Verify the output exists ───────────────────────────────────────────
+      - name: Verify artifact
+        shell: bash
+        run: |
+          if [ -f "ColorOverlay.aex" ]; then
+            SIZE=$(stat -c%s ColorOverlay.aex)
+            echo "ColorOverlay.aex built successfully (${SIZE} bytes)"
+          else
+            echo "ERROR: ColorOverlay.aex not found"
+            exit 1
+          fi
+
+      # ── 7. Upload as downloadable artifact ───────────────────────────────────
+      - name: Upload ColorOverlay.aex
+        uses: actions/upload-artifact@v4
+        with:
+          name: ColorOverlay-aex
+          path: ColorOverlay.aex
+          retention-days: 30
+          if-no-files-found: error
