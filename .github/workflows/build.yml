@@ -36,6 +36,7 @@ jobs:
 
           # Core headers
           for f in \
+            A.h \
             AE_Effect.h \
             AE_EffectCB.h \
             AE_EffectCBSuites.h \
