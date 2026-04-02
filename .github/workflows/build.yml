@@ -34,40 +34,67 @@ jobs:
           BASE="https://raw.githubusercontent.com/HeavyWork/AEResources/master"
           mkdir -p SDK/Headers SDK/Util SDK/Headers/SP SDK/Headers/adobesdk/config
 
-          # Core headers
+          # All Headers/ files
           for f in \
             A.h \
+            AEConfig.h \
+            AEFX_SuiteHandlerTemplate.h \
+            AE_AdvEffectSuites.h \
+            AE_CacheOnLoadSuite.h \
+            AE_ChannelSuites.h \
+            AE_CreatorInfo.h \
             AE_Effect.h \
             AE_EffectCB.h \
             AE_EffectCBSuites.h \
+            AE_EffectPixelFormat.h \
             AE_EffectSuites.h \
-            AE_AdvEffectSuites.h \
-            AE_Macros.h \
-            AEConfig.h \
+            AE_EffectSuitesHelper.h \
+            AE_EffectSuitesOld.h \
+            AE_EffectUI.h \
             AE_EffectVers.h \
             AE_GeneralPlug.h \
-            AEFX_SuiteHandlerTemplate.h
+            AE_GeneralPlugOld.h \
+            AE_GeneralPlugPanels.h \
+            AE_GeneralPlugPost.h \
+            AE_GeneralPlugPre.h \
+            AE_Hook.h \
+            AE_IO.h \
+            AE_IO_FileExt.h \
+            AE_Macros.h \
+            FIEL_Public.h \
+            PF_Masks.h \
+            PIFormatT.h \
+            PR_Public.h \
+            PT_Public.h \
+            PrSDKAESupport.h \
+            PrSDKPixelFormat.h \
+            SuiteHelper.h
           do
             echo "Fetching Headers/$f"
             curl -fsSL "$BASE/Headers/$f" -o "SDK/Headers/$f"
           done
 
-          # Utility headers
-          for f in Param_Utils.h entry.h String_Utils.h; do
-            echo "Fetching Util/$f"
-            curl -fsSL "$BASE/Util/$f" -o "SDK/Util/$f"
-          done
-
-          # SP (Suite Peer) headers — SPBasic.h pulls in SPTypes.h -> SPConfig.h + SPErrorCodes.h
-          for f in SPBasic.h SPFiles.h SPRuntme.h SPCaches.h SPTypes.h SPConfig.h SPErrorCodes.h; do
+          # All SP/ headers
+          for f in \
+            SPAccess.h SPAdapts.h SPBasic.h SPBckDbg.h SPBlocks.h SPCOM.h \
+            SPCaches.h SPConfig.h SPErrorCodes.h SPErrors.h SPFiles.h SPHost.h \
+            SPInterf.h SPMData.h SPPiPL.h SPPlugs.h SPProps.h SPRuntme.h \
+            SPSTSPrp.h SPStrngs.h SPSuites.h SPTypes.h
+          do
             echo "Fetching Headers/SP/$f"
             curl -fsSL "$BASE/Headers/SP/$f" -o "SDK/Headers/SP/$f"
           done
 
-          # adobesdk/config headers — required by AE_EffectCB.h
+          # adobesdk/config headers
           for f in PreConfig.h PostConfig.h AdobesdkTypes.h; do
             echo "Fetching Headers/adobesdk/config/$f"
             curl -fsSL "$BASE/Headers/adobesdk/config/$f" -o "SDK/Headers/adobesdk/config/$f"
+          done
+
+          # Util/ headers
+          for f in Param_Utils.h entry.h String_Utils.h; do
+            echo "Fetching Util/$f"
+            curl -fsSL "$BASE/Util/$f" -o "SDK/Util/$f"
           done
 
       # ── 4. Generate PiPL binary ───────────────────────────────────────────────
